@@ -10,3 +10,4 @@
 *.swp
 logs/
 build/
+node_modules/

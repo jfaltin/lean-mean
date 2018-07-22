@@ -1,0 +1,22 @@
+{
+  "name": "myleanbook",
+  "version": "1.0.0",
+  "description": "\"Code from Lean MEAN book\"",
+  "main": "server.js",
+  "scripts": {
+    "test": "\"echo \\\"Error: no test specified\\\" && exit 1\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jfaltin/lean-mean.git"
+  },
+  "author": "Jon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jfaltin/lean-mean/issues"
+  },
+  "homepage": "https://github.com/jfaltin/lean-mean#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
