@@ -2,6 +2,7 @@
 
 var express = require('express');
 var config = require('../config');
+var chalk = require('chalk');
 
 module.exports.init = function init(callback) {
 
@@ -20,8 +21,13 @@ module.exports.start = function start() {
 
    _this.init(function(app) {
          var server = app.listen(config.port, function() {
-             var port = server.address().port;
-             console.log('Example app listening on port %s', port);
+          console.log('--');
+          console.log(chalk.green(config.app.title));
+          console.log();
+          console.log('Listening on port %s', config.port);
+          console.log();
+          console.log(chalk.green('Environment:     ' + process.env.NODE_ENV));
+          console.log('--');
          });
      });
  };

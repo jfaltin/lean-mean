@@ -1,13 +1,43 @@
 'use strict';
 
 var path = require('path');
+var _ = require('lodash');
+var chalk = require('chalk');
+var glob = require('glob');
+
+// Validate the existence of NODE_ENV
+var validateEnvironmentVariable = function() {
+	var environmentFiles = glob.sync('./config/env/' + process.env.NODE_ENV + '.js');
+	console.log();
+	if (!environmentFiles.length) {
+		if (process.env.NODE_ENV) {
+			console.error(chalk.red('+ Error: No configuration file found for "' + process.env.NODE_ENV + 
+				'" environment using development instead'));
+		} else {
+			console.error(chalk.red(
+				' Error: NODE_ENV is not defined! ' +
+				'Using default development environment'));
+		}
+		process.env.NODE_ENV = 'development';
+	}
+	console.log(chalk.white(''));
+};
+
 
 // Initialize global configuration
 var initGlobalConfig = function() {
+
+	// Validate the existence of NODE_ENV
+	validateEnvironmentVariable();
+
 	// Get default config
 	var defaultConfig = require(path.join(process.cwd(),'config/env/default'));
-	// Use the default config
-	var config = defaultConfig;
+	
+	// Get the applicable evironment config
+	var environmentConfig = require(path.join(process.cwd(), 'config/env', process.env.NODE_ENV)) || {};
+
+	// Merge config files
+	var config = _.merge(defaultConfig, environmentConfig);
 
 	return config;
 
