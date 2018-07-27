@@ -28,6 +28,8 @@ module.exports.start = function start() {
           console.log();
           console.log(chalk.green('Environment:     ' + process.env.NODE_ENV));
           console.log('--');
+          console.log(chalk.green('App Version:    ' + config.packageJson.version));
+          console.log('--');
          });
      });
  };

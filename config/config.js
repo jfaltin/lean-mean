@@ -39,6 +39,10 @@ var initGlobalConfig = function() {
 	// Merge config files
 	var config = _.merge(defaultConfig, environmentConfig);
 
+	// Read package.json for MEAN.JS project information
+	var pkg = require(path.resolve('./package.json'));
+	config.packageJson = pkg;
+
 	return config;
 
 };
