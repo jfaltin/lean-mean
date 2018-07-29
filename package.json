@@ -24,9 +24,12 @@
     "glob": "^7.1.2",
     "gulp": "^3.9.1",
     "gulp-jshint": "^2.1.0",
+    "gulp-livereload": "^3.8.1",
+    "gulp-load-plugins": "^1.5.0",
     "gulp-nodemon": "^2.2.1",
     "jshint": "^2.9.5",
     "jshint-stylish": "^2.2.1",
-    "lodash": "^4.17.10"
+    "lodash": "^4.17.10",
+    "run-sequence": "^2.2.1"
   }
 }

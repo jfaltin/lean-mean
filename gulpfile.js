@@ -1,41 +1,62 @@
 'use strict';
 
 var gulp = require('gulp');
-var nodemon = require('gulp-nodemon');
-var jshint = require('gulp-jshint');
+var _ = require('lodash');
+var runSequence = require('run-sequence');
+var gulpLoadPlugins = require('gulp-load-plugins');
+var plugins = gulpLoadPlugins();
+var defaultAssets = require('./config/assets/default');
 
-//Unified watch object
 
-var watchFiles = {
-    serverJS: ['gulpfile.js', 'server.js', 'config/lib/app.js', 'config/config.js'],
-};
+
+// Set NODE_ENV to 'test'
+gulp.task('env:test', function() {
+  process.env.NODE_ENV = 'test';
+});
+
+// Set NODE_ENV to 'development'
+gulp.task('env:dev', function() {
+  process.env.NODE_ENV = 'development';
+});
+
+// Set NODE_ENV to 'production'
+gulp.task('env:prod', function() {
+  process.env.NODE_ENV = 'production';
+});
 
 // Start server.js and watch for changes in all .js files
 
 gulp.task('nodemon', function() {
-   return nodemon({
+   return plugins.nodemon({
      verbose: true,
      script: 'server.js',
      ext: 'js',
-     env: { NODE_ENV: 'development' },
-     watch: watchFiles.serverJS,
+     watch: defaultAssets.server.allJS,
    });
 });
 
-
-
 // Detect errors and potential problems in the js code.
 gulp.task('jshint', function() {
-  return gulp.src(watchFiles.serverJS)
-    .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('fail'));
+  var assets = _.union(
+    defaultAssets.server.gulpConfig,
+    defaultAssets.server.allJS
+  );
+
+  return gulp.src(assets)
+    .pipe(plugins.jshint())
+    .pipe(plugins.jshint.reporter('jshint-stylish'))
+    .pipe(plugins.jshint.reporter('fail'));
 });
 
 // Watch files for changes 
 gulp.task('watch', function() {
+
+  //Start livereload
+  plugins.livereload.listen();
+
    // Add watch rules
-   gulp.watch(watchFiles.serverJS, ['jshint']);
+   gulp.watch(defaultAssets.server.allJS, ['jshint']).on('change',
+    plugins.livereload.changed);
 });
 
 // Lint tasks
@@ -43,5 +64,6 @@ gulp.task('watch', function() {
 gulp.task('lint', ['jshint']);
 
 // Default task
-//gulp.task('default', ['lint', 'nodemon', 'watch']);
-gulp.task('default', ['lint', 'nodemon','watch']);
+gulp.task('default', function(done) {
+  runSequence('env:dev', 'lint', ['watch', 'nodemon'], done);
+});
