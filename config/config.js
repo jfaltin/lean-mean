@@ -24,6 +24,56 @@ var validateEnvironmentVariable = function() {
 };
 
 
+// Get files by glob patterns
+var getGlobbedPaths = function(globPatterns, excludes) {
+	// URL paths regex
+	var urlRegex = new RegExp('^(?:[a-z]+:)?\/\/', 'i');
+	// The output array
+	var output = [];
+
+
+	// If glob pattern is array then we use each pattern in a recursive way
+	// Otherwise we use glob
+	if (_.isArray(globPatterns)) {
+		globPatterns.forEach(function(globPattern) {
+			output = _.union(output, getGlobbedPaths(globPattern, excludes));
+		});
+	} else if (_.isString(globPatterns)) {
+		if (urlRegex.test(globPatterns)) {
+			output.push(globPatterns);
+		} else {
+			var files = glob.sync(globPatterns);
+			if (excludes) {
+				files = files.map(function(file) {
+					if (_.isArray(excludes)) {
+						for (var i in excludes) {
+							file = file.replace(excludes[i], '');
+						}
+					} else {
+						file = file.replace(excludes, '');
+					}
+					return file;
+				});
+			}
+			output = _.union(output, files);
+		}
+	}
+	return output;
+};
+
+
+//Initialize global configuration files
+var initGlobalConfigFiles = function(config, assets) {
+	// Appending files
+	config.files = {
+		server : {},
+	};
+
+	// Setting Globbed config file
+	config.files.server.configs = getGlobbedPaths(assets.server.config);
+};
+
+
 // Initialize global configuration
 var initGlobalConfig = function() {
 
@@ -42,6 +92,22 @@ var initGlobalConfig = function() {
 	// Read package.json for MEAN.JS project information
 	var pkg = require(path.resolve('./package.json'));
 	config.packageJson = pkg;
+
+	//Expose configuration utilities
+	config.utils = { getGlobbedPaths: getGlobbedPaths, };
+
+	// Get the default assets
+	var defaultAssets = require(path.join(process.cwd(),
+		'config/assets/default'));
+
+	var environmentAssets = require(path.join(process.cwd(),
+		'config/assets', process.env.NODE_ENV)) || {};
+
+	// Merge assets
+	var assets = _.merge(defaultAssets, environmentAssets);
+
+	// Initialize global globbed files
+	initGlobalConfigFiles(config, assets);
 
 	return config;
 
