@@ -3,8 +3,12 @@
 var express = require('express');
 var config = require('../config');
 var chalk = require('chalk');
+var mongoose = require('./mongoose');
 
 module.exports.init = function init(callback) {
+
+  // Establish the database connection
+  mongoose.connect(function(db) {
 
   // Initialize express
   var app = express();
@@ -12,8 +16,9 @@ module.exports.init = function init(callback) {
    res.send('Hello World! How are you Robert?? ANSWER ME!!!');
   });
   if (callback) {
-    callback(app);
+    callback(app,db,config);
    }
+  });
  };
 
 module.exports.start = function start() {
@@ -30,6 +35,7 @@ module.exports.start = function start() {
           console.log('--');
           console.log(chalk.green('App Version:    ' + config.packageJson.version));
           console.log('--');
+          console.log(chalk.green('Database:   ' + config.db.uri));
          });
      });
  };

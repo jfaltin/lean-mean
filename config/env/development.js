@@ -7,4 +7,14 @@ module.exports = {
 		title: defaultEnvConfig.app.title + ' - Development Environment',
 		livereload: true,
 	},
+
+	db: {
+		uri: 'mongodb://localhost/lmwam-dev',
+		options: {
+			user: '',
+			pass: '',
+		},
+		// Enable mongoose debug mode
+		debug: process.env.MONGODB_DEBUG || false,
+	},
 };
