@@ -4,6 +4,7 @@ var express = require('express');
 var config = require('../config');
 var chalk = require('chalk');
 var mongoose = require('./mongoose');
+var express = require('./express');
 
 module.exports.init = function init(callback) {
 
@@ -11,10 +12,8 @@ module.exports.init = function init(callback) {
   mongoose.connect(function(db) {
 
   // Initialize express
-  var app = express();
-  app.get('/', function(req,res) {
-   res.send('Hello World! How are you Robert?? ANSWER ME!!!');
-  });
+  var app = express.init(db);
+
   if (callback) {
     callback(app,db,config);
    }
