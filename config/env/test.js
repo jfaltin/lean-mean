@@ -17,4 +17,14 @@ module.exports = {
 		// Enable mongoose debug mode
 		debug: process.env.MONGODB_DEBUG || false,
 	},
+
+	log: {
+		fileLogger: {
+			directoryPath: process.cwd(),
+			fileName: 'app.log',
+			maxsize: 10485760,
+			maxFiles: 2,
+			json: false,
+		},
+	},
 };

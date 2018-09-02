@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/jfaltin/lean-mean#readme",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "morgan": "^1.9.0",
+    "winston": "^3.0.0"
   },
   "devDependencies": {
     "body-parser": "^1.18.3",
