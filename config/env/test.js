@@ -25,6 +25,7 @@ module.exports = {
 			maxsize: 10485760,
 			maxFiles: 2,
 			json: false,
+			format: 'test',
 		},
 	},
 };

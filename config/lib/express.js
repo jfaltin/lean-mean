@@ -8,6 +8,9 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 var flash = require('connect-flash');
+var morgan = require('morgan');
+var logger = require('./logger');
+var _ = require('lodash');
 
 //Initialize local variables
 module.exports.initLocalVariables = function(app) {
@@ -39,6 +42,11 @@ module.exports.initMiddleware = function(app) {
 		},
 		level: 9,
 	}));
+
+	// Enable logger (morgan) if enabled in the configuration file
+	if (_.has(config, 'log.format')) {
+		app.use(morgan(logger.getLogFormat(), logger.getMorganOptions()));
+	}
 
 	// Request body parsing middleware
 	app.use(bodyParser.urlencoded({
