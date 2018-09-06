@@ -26,4 +26,13 @@ module.exports = {
 	},
 
 	sessionCollection: 'sessions',
+
+	//Lusca config
+	lusca: {
+		csrf: false,
+		csp: false,
+		xframe: 'SAMEORIGIN',
+		p3p: 'ABCDEF',
+		xssProtection: true
+	},
 };

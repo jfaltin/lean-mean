@@ -13,6 +13,8 @@ var logger = require('./logger');
 var _ = require('lodash');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
+var lusca = require('lusca');
+var helmet = require('helmet');
 
 //Initialize local variables
 module.exports.initLocalVariables = function(app) {
@@ -66,7 +68,7 @@ module.exports.initMiddleware = function(app) {
 	app.use(flash());
 };
 
-// Confiure Express session
+// Configure Express session
 module.exports.initSession = function(app, db) {
 	app.use(session({
 		saveUnitialized: true,
@@ -85,8 +87,25 @@ module.exports.initSession = function(app, db) {
 		}),
 	}));
 
+	app.use(lusca(config.lusca));
+
 };
 
+// Configure Helmet header settings
+module.exports.initHelmetHeaders = function (app) {
+  // Use helmet to secure Express headers
+  var SIX_MONTHS = 15778476000;
+  app.use(helmet.frameguard());
+  app.use(helmet.xssFilter());
+  app.use(helmet.noSniff());
+  app.use(helmet.ieNoOpen());
+  app.use(helmet.hsts({
+    maxAge: SIX_MONTHS,
+    includeSubdomains: true,
+    force: true
+  }));
+  app.disable('x-powered-by');
+};
 
 // Initialize the express application
 module.exports.init = function (db) {
@@ -101,6 +120,9 @@ module.exports.init = function (db) {
 
 	// Initialize Express session
 	this.initSession(app, db);
+
+	// Initialize helmet security headers
+	this.initHelmetHeaders(app);
 
 	// Temporary helloworld placeholder
 	app.get('/', function(req,res) {
