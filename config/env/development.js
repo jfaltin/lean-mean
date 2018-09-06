@@ -9,11 +9,13 @@ module.exports = {
 	},
 
 	db: {
-		uri: 'mongodb://localhost/lmwam-dev',
+		uri: 'mongodb://localhost:27017/lmwam-dev',
 		options: {
 			user: '',
 			pass: '',
+			useNewUrlParser: true,
 		},
+		url: 'mongodb://localhost:27017/lmwam-dev',
 		// Enable mongoose debug mode
 		debug: process.env.MONGODB_DEBUG || false,
 	},

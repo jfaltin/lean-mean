@@ -9,11 +9,13 @@ module.exports = {
 	port: process.env.PORT || 3001,
 
 	db: {
-		uri: 'mongodb://localhost/lmwam-test',
+		uri: 'mongodb://localhost:27017/lmwam-test',
 		options: {
 			user: '',
 			pass: '',
+			useNewUrlParser: true,
 		},
+		url: 'mongodb://localhost:27017/lmwam-test',
 		// Enable mongoose debug mode
 		debug: process.env.MONGODB_DEBUG || false,
 	},

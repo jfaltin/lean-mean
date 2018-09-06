@@ -11,6 +11,8 @@ var flash = require('connect-flash');
 var morgan = require('morgan');
 var logger = require('./logger');
 var _ = require('lodash');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 
 //Initialize local variables
 module.exports.initLocalVariables = function(app) {
@@ -64,6 +66,27 @@ module.exports.initMiddleware = function(app) {
 	app.use(flash());
 };
 
+// Confiure Express session
+module.exports.initSession = function(app, db) {
+	app.use(session({
+		saveUnitialized: true,
+		resave: true,
+		secret: config.sessionSecret,
+		cookie: {
+			maxAge: config.sessionCookie.maxAge,
+			httpOnly: config.sessionCookie.httpOnly,
+			secure: config.sessionCookie.secure && config.secure.ssl
+		},
+		name: config.sessionCookieKey,
+		store: new MongoStore({
+			url: 'mongodb://localhost/local',
+			mongooseConnection: db.connection,
+			collection: config.sessionCollection
+		}),
+	}));
+
+};
+
 
 // Initialize the express application
 module.exports.init = function (db) {
@@ -75,6 +98,9 @@ module.exports.init = function (db) {
 
 	//Initialize express middleware
 	this.initMiddleware(app);
+
+	// Initialize Express session
+	this.initSession(app, db);
 
 	// Temporary helloworld placeholder
 	app.get('/', function(req,res) {

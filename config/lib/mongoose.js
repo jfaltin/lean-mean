@@ -9,7 +9,8 @@ var config = require('../config');
 module.exports.connect = function(cb) {
 	var _this = this;
 
-	var db = mongoose.connect(config.db.uri, config.db.options, function(err) {
+	//var db = mongoose.connect(config.db.uri, config.db.options, config.db.url, function(err) {
+	var db = mongoose.connect('mongodb://localhost:27017/lmwam-dev', {useNewUrlParser: true}, function(err) {
 		// Log error
 		if (err) {
 			console.error(chalk.red('Could not connect to MongoDB!'));
