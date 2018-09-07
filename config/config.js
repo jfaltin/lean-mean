@@ -84,17 +84,38 @@ var validateSessionSecret = function(config, testing) {
 	return true;
 };
 
+// Initialize global configuration directories
+var initGlobalConfigDirectories = function (config, assets) {
+  // Append directories
+  config.directories = {
+    client: {}
+  };
+
+  // Set globbed client paths
+  config.directories.client = getGlobbedPaths(path.join(process.cwd(), 
+  'modules/*/client/'), process.cwd().replace(new RegExp(/\\/g), '/'));
+};
+
 
 //Initialize global configuration files
 var initGlobalConfigFiles = function(config, assets) {
 	// Appending files
 	config.files = {
 		server : {},
+		client: {},
 	};
 
 	// Setting Globbed config file
 	config.files.server.configs = getGlobbedPaths(assets.server.config);
+
+	// Set globbed js files
+	config.files.client.js = getGlobbedPaths(assets.client.lib.js, 'public/').concat(getGlobbedPaths(assets.client.js, ['public/']));
+
+	// Set Globbed css files
+	config.files.client.css = getGlobbedPaths(assets.client.lib.css, 'public/').concat(getGlobbedPaths(assets.client.css, ['public/']));
 };
+
+
 
 
 // Initialize global configuration
@@ -137,6 +158,9 @@ var initGlobalConfig = function() {
 
 	// Initialize global globbed files
 	initGlobalConfigFiles(config, assets);
+
+	// Initialize global globbed directories
+	initGlobalConfigDirectories(config,assets);
 
 	return config;
 

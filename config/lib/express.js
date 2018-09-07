@@ -15,6 +15,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var lusca = require('lusca');
 var helmet = require('helmet');
+var path = require('path');
 
 //Initialize local variables
 module.exports.initLocalVariables = function(app) {
@@ -28,6 +29,9 @@ if (process.env.NODE_ENV === 'development') {
 }
 	app.locals.title = config.app.title;
 	app.locals.livereload = config.livereload;
+
+	app.locals.jsFiles = config.files.client.js;
+	app.locals.cssFiles = config.files.client.css;
 
 	//Pass the request host and url to environment locals
 	app.use(function(req, res, next) {
@@ -71,7 +75,6 @@ module.exports.initMiddleware = function(app) {
 // Configure Express session
 module.exports.initSession = function(app, db) {
 	app.use(session({
-		saveUnitialized: true,
 		resave: true,
 		secret: config.sessionSecret,
 		cookie: {
@@ -85,6 +88,7 @@ module.exports.initSession = function(app, db) {
 			mongooseConnection: db.connection,
 			collection: config.sessionCollection
 		}),
+		saveUninitialized: true,
 	}));
 
 	app.use(lusca(config.lusca));
@@ -107,6 +111,17 @@ module.exports.initHelmetHeaders = function (app) {
   app.disable('x-powered-by');
 };
 
+// Configure the modules static routes
+module.exports.initModulesClientRoutes = function(app) {
+  // Set the app router and static folder
+  app.use('/', express.static(path.resolve('./public'), { maxAge: 86400000 }));
+
+  // Glob static routing
+  config.directories.client.forEach(function(staticPath) {
+    app.use(staticPath, express.static(path.resolve('./' + staticPath)));
+  });
+};
+
 // Initialize the express application
 module.exports.init = function (db) {
 	// Initialize express app
@@ -123,6 +138,9 @@ module.exports.init = function (db) {
 
 	// Initialize helmet security headers
 	this.initHelmetHeaders(app);
+
+	// Initialize modules static client routes, before session!
+    this.initModulesClientRoutes(app);
 
 	// Temporary helloworld placeholder
 	app.get('/', function(req,res) {
