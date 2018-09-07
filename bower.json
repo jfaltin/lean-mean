@@ -1,0 +1,18 @@
+{
+  "name": "myleanmeanbook",
+  "description": "My code from working through Lean MEAN Web App Machine",
+  "main": "server.js",
+  "authors": [
+    "Jon Faltin"
+  ],
+  "license": "SEE LICENSE IN repository",
+  "homepage": "https://github.com/jfaltin/lean-mean",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
