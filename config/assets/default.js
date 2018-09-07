@@ -11,6 +11,8 @@ module.exports = {
 			css: [
 			],
 			js: [
+				//bower:js
+				'public/lib/angular/angular.js'
 			],
 		},
 		css: [
