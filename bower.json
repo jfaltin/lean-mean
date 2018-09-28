@@ -1,21 +1,15 @@
 {
   "name": "myleanmeanbook",
   "description": "My code from working through Lean MEAN Web App Machine",
-  "main": "server.js",
   "authors": [
-    "Jon Faltin"
+    "Dan Miller"
   ],
   "license": "SEE LICENSE IN repository",
-  "homepage": "https://github.com/jfaltin/lean-mean",
+  "homepage": "https://github.com/miller-productions/leanmeanbook",
   "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
   "dependencies": {
-    "angular": "^1.7.3"
+    "angular": "~1.6.4",
+    "angular-ui-router": "~1.0.3",
+    "bootstrap": "~3.3.7"
   }
 }

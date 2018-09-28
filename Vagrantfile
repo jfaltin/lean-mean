@@ -4,11 +4,6 @@ Vagrant.configure(2) do |config|
   config.vm.hostname = "scotchbox"
   config.vm.synced_folder ".", "/var/www",
     :mount_options => ["dmode=777", "fmode=666"]
-
-
-config.ssh.username = "vagrant"
-
-config.ssh.password = "vagrant"
   
   # set the network mode to get a private, local, DHCP assigned IP address
   # vagrant ssh into the box and run 'ifconfig' to find the IP address

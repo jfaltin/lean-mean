@@ -1,5 +1,7 @@
 'use strict';
 
 module.exports = {
-	// Coming soon...
+  tests: {
+    server: ['modules/*/tests/server/**/*.js'],
+  },
 };

@@ -6,6 +6,13 @@ var gulp = require('gulp');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var plugins = gulpLoadPlugins();
 var runSequence = require('run-sequence');
+// Module dependencies
+var testAssets = require('./config/assets/test');
+var glob = require('glob');
+var path = require('path');
+
+// Globals
+var changedTestFiles = [];
 
 // Set NODE_ENV to 'test'
 gulp.task('env:test', function() {
@@ -53,6 +60,58 @@ gulp.task('watch', function() {
   // Add watch rules
   gulp.watch(defaultAssets.server.allJS, ['jshint'])
     .on('change', plugins.livereload.changed);
+});
+
+// Watch server files, including tests
+gulp.task('watch:server:run-tests', function() {
+  // Add Server Test file rules
+  gulp.watch(
+    [testAssets.tests.server, defaultAssets.server.allJS], ['test:server'])
+  .on('change', function(file) {
+
+    changedTestFiles = [];
+
+    // Iterate through server test glob patterns
+    _.forEach(testAssets.tests.server, function(pattern) {
+      // Determine if the changed (watched) file is a server test
+      _.forEach(glob.sync(pattern), function(f) {
+        var filePath = path.resolve(f);
+
+        if (filePath === path.resolve(file.path)) {
+          changedTestFiles.push(f);
+        }
+      });
+    });
+
+    plugins.livereload.changed();
+  });
+});
+
+gulp.task('mocha', function(done) {
+  var testSuites = changedTestFiles.length ? 
+    changedTestFiles : testAssets.tests.server;
+  var error;
+
+  gulp.src(testSuites)
+    .pipe(plugins.mocha({
+      reporter: 'spec',
+      timeout: 10000,
+    }))
+    .on('error', function(err) {
+      // If an error occurs, save it
+      error = err;
+    })
+    .on('end', function() {
+      // When the tests are done...
+      // <placeholder for later> cleanup here, e.g. database connection
+      // Then pass the error back to gulp
+      done(error);
+    });
+
+});
+
+gulp.task('test:server', function(done) {
+  runSequence('env:test', 'lint', 'mocha', done);
 });
 
 // Lint task(s)
